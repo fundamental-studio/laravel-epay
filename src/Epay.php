@@ -90,8 +90,8 @@ class Epay
 
         $this->data = [
             'MIN'           => $this->min,
-            'INVOICE'       => ($invoice == false) ? (sprintf("%.0f", rand() * 100000)) : $invoice,
-            'EXP_TIME'      => ($expiration == false) ? Carbon::now()->addHours(72)->format('d.m.Y H:i:s') : $expiration,
+            'INVOICE'       => ($invoice == false and config('EPAY_GENERATE_INVOICE')) ? (sprintf("%.0f", rand() * 100000)) : $invoice,
+            'EXP_TIME'      => ($expiration == false) ? Carbon::now()->addHours(config('EPAY_EXPIRATION_HOURS'))->format('d.m.Y H:i:s') : $expiration,
             'AMOUNT'        => $amount,
             'DESCRIPTION'   => $description
         ];

@@ -34,8 +34,11 @@
     "extra": {
         "laravel": {
             "providers": [
-                ""
-            ]
+                "Fundamental\\Epay\\EpayServiceProvider"
+            ],
+            "aliases": {
+                "Epay": "Fundamental\\Epay\\Facades\\Facade"
+            }
         }
     }
 }

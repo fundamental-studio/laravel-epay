@@ -9,10 +9,32 @@ Made with love and code by [Fundamental Studio Ltd.](https://www.fundamental.bg)
 
 ## Installation
 
-Via composer
+The package is compatible with Laravel 5.8+ version.
+
+Via composer:
 ``` bash
 $ composer require fmtl-studio/laravel-epay
 ```
+
+After installing, the package should be auto-discovered by Laravel.
+In order to configurate the package, you need to publish the config file using this command:
+``` bash
+$ php artisan vendor:publish --provider="Fundamental\Epay\EpayServiceProvider"
+```
+
+After publishing the config file, you should either add the needed keys to the global .env Laravel file:
+```
+EPAY_PRODUCTION=FALSE
+EPAY_MIN=XXXXXXXXXX
+EPAY_SECRET=XXXXXXXXXX
+EPAY_DEFAULT_CURRENCY="BGN"
+EPAY_DEFAULT_URL_OK="https://myurl.com/"
+EPAY_DEFAULT_URL_CANCEL="https://myurl.com/"
+EPAY_GENERATE_INVOICE=TRUE
+EPAY_EXPIRATION_HOURS=72
+```
+
+You are up & running and ready to go.
 
 ## Documentation and Usage instructions
 
@@ -24,6 +46,7 @@ Official ePay documentation can be found [here](https://www.epay.bg/v3main/img/f
 All changes are available in our Changelog file.
 
 ## Support
+For any further questions, feature requests, problems, ideas, etc. you can create an issue tracker or drop us a line at support@fundamental.bg
 
 ## Contributing
 Read the Contribution file for further information.
