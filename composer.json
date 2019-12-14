@@ -2,20 +2,28 @@
     "name": "fmtl-studio/laravel-epay",
     "description": "Laravel adapter to accept payments through the ePay, EasyPay and BPay.",
     "type": "library",
+    "homepage": "https://www.fundamental.bg",
     "license": "MIT",
     "authors": [
         {
             "name": "Konstantin Rachev",
-            "email": "konstantin@fundamental.bg"
+            "email": "konstantin@fundamental.bg",
+            "homepage": "https://www.fundamental.bg"
+        },
+        {
+            "name": "Vanya Ananieva",
+            "email": "vanya@fundamental.bg",
+            "homepage": "https://www.fundamental.bg"
         },
         {
             "name": "Fundamental Studio Ltd",
-            "email": "info@fundamental.bg"
+            "email": "info@fundamental.bg",
+            "homepage": "https://www.fundamental.bg"
         }
     ],
     "autoload": {
         "psr-4": {
-
+            "Fundamental\\Epay": "src"
         }
     },
     "autoload-dev": {
@@ -24,6 +32,7 @@
         }
     },
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "nesbot/carbon": "^2.0",
         "guzzlehttp/guzzle": "^6.5"
@@ -40,5 +49,8 @@
                 "Epay": "Fundamental\\Epay\\Facades\\Facade"
             }
         }
+    },
+    "config": {
+        "sort-packages": true
     }
 }
