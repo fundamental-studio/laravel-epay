@@ -9,5 +9,7 @@ return [
     'url_cancel' => env('EPAY_DEFAULT_URL_CANCEL'),
     'currency' => env('EPAY_DEFAULT_CURRENCY'),
 
+    'generate_invoice' => env('EPAY_GENERATE_INVOICE'),
+    'expiration_period' => env('EPAY_EXPIRATION_HOURS'),
 
 ];

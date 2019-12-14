@@ -17,21 +17,24 @@ class Epay
     private $isProduction;
     private $min;
     private $secret;
-    private $language;
+    private $language = 'BG';
 
     private $gatewayUrl = 'https://epay.bg/';
     private $testGatewayUrl = 'https://demo.epay.bg/';
 
+    private $easypayGatewayUrl = 'https://www.epay.bg/ezp/reg_bill.cgi';
+    private $easypayTestGatewayUrl = 'https://demo.epay.bg/ezp/reg_bill.cgi';
+
     private $encoded;
     private $checksum;
+
+    private $idn;
 
     private $type;
     private $urls = [
         'ok' => '',
         'cancel' => ''
     ];
-
-    private $idn;
 
     const AVAILABLE_LANGUAGES = ['BG', 'EN'];
     const AVAILABLE_CURRENCIES = ['BGN', 'USD', 'EUR'];
@@ -78,7 +81,7 @@ class Epay
      * @param string $description
      * @return void
      */
-    public function setData($invoice = '', $amount, $expiration = '', $description = '')
+    public function setData($invoice = false, $amount, $expiration = false, String $description = '', $currency = 'BGN', $encoding = null)
     {
         $this->validateInvoice($invoice);
         $this->validateAmount($amount);
@@ -86,12 +89,20 @@ class Epay
         $this->validateDescription($description);
 
         $this->data = [
-            'INVOICE' => ($invoice == false or $invoice == '') ? (sprintf("%.0f", rand() * 100000)) : $invoice,
-            'EXP_TIME' => ($expiration == '' or $expiration == null or $expiration == false) ? Carbon::now()->addHours(72)->format('d.m.Y H:i:s') : $expiration,
-            'AMOUNT' => $amount,
-            'DESCRIPTION' => $description,
-            'ENCODING' => 'utf-8'
+            'MIN'           => $this->min,
+            'INVOICE'       => ($invoice == false) ? (sprintf("%.0f", rand() * 100000)) : $invoice,
+            'EXP_TIME'      => ($expiration == false) ? Carbon::now()->addHours(72)->format('d.m.Y H:i:s') : $expiration,
+            'AMOUNT'        => $amount,
+            'DESCRIPTION'   => $description
         ];
+
+        if (in_array($currency, AVAILABLE_CURRENCIES)) {
+            $this->data['CURRENCY'] = $currency;
+        }
+
+        if ($encoding === 'utf-8') {
+            $this->data['ENCODING'] = $encoding;
+        }
 
         $this->encodeRequestData();
     }
@@ -187,7 +198,7 @@ class Epay
     public function requestIDNumber(): String
     {
         $client = new Client();
-        $res = $client->request('GET', 'https://www.epay.bg/ezp/reg_bill.cgi', [
+        $res = $client->request('GET', (($this->isProduction) ? $this->easypayGatewayUrl : $this->easypayTestGatewayUrl), [
             'query' => [
                 'ENCODED' => $this->encoded,
                 'CHECKSUM' => $this->generateChecksum()
@@ -203,7 +214,7 @@ class Epay
             return $this->idn;
         }
 
-        throw new Exception();
+        throw new InvalidEasypayResponseException();
     }
 
     /**
@@ -256,7 +267,6 @@ class Epay
                     }
                     else
                     {
-                        // Expired or other status
                         $result['response'] = "INVOICE=$invoice:STATUS=NO\n";
                     }
                 }
@@ -345,8 +355,16 @@ class Epay
      *
      * @return String
      */
-    public function generatePaymentFields(): String
+    public function generatePaymentFields($urlOk = false, $urlCancel = false): String
     {
+        if ($this->urlOK != false) {
+            $this->urls['ok'] = $this->urlOK;
+        }
+
+        if ($this->urlCancel != false) {
+            $this->urls['cancel'] = $this->urlCancel;
+        }
+
         return `
             <input type="hidden" name="PAGE" value="{$this->type}">
             <input type="hidden" name="LANG" value="{$this->language}">
@@ -364,11 +382,11 @@ class Epay
      * @param string $id
      * @return String
      */
-    public function generatePaymentForm($id = ''): String
+    public function generatePaymentForm($id = '', $urlOk = false, $urlCancel = false): String
     {
         return `
             <form id="{$id}" action="{$this->getTargetUrl()}" method="post">
-                {$this->generatePaymentFields()}
+                {$this->generatePaymentFields($urlOk, $urlCancel)}
             </form>
         `;
     }
