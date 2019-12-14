@@ -23,7 +23,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Fundamental\\Epay\\": "src"
+            "Fundamental\\Epay\\": "src/"
         }
     },
     "autoload-dev": {
