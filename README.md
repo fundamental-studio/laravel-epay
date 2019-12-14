@@ -11,11 +11,7 @@ $ composer require fmtl-studio/epay
 ## Documentation and Usage instructions
 
 ## Changelog
-All changes to laravel-epay, documented in this file:
-
-### 1.0.0 - 14.12.2019
-Added
-- Initial commit, everything
+All changes are available in our Changelog file.
 
 ## Support
 
@@ -26,6 +22,8 @@ Read the Contribution file for further information.
 
 - Konstantin Rachev
 - Vanya Ananieva
+
+The package is bundled and contributed to the community by Fundamental Studio Ltd.'s team.
 
 ## Issues
 If you discover any issues, please use the issue tracker.
