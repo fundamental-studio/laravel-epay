@@ -8,6 +8,7 @@ use Fundamental\Epay\Exceptions\InvalidAmountException;
 use Fundamental\Epay\Exceptions\InvalidInvoiceException;
 use Fundamental\Epay\Exceptions\InvalidChecksumException;
 use Fundamental\Epay\Exceptions\InvalidCurrencyException;
+use Fundamental\Epay\Exceptions\InvalidExpirationException;
 use Fundamental\Epay\Exceptions\InvalidEasypayResponseException;
 
 class Epay
@@ -434,7 +435,9 @@ class Epay
 
     private function validateExpiration($expiration)
     {
-
+        if (!preg_match('/^[0-9]{2}\.[0-9]{2}\.[0-9]{4}\ [0-9]{2}\:[0-9]{2}\:[0-9]{2}$/', (String) $expiration)) {
+            throw new InvalidExpirationException();
+        }
     }
 
     private function validateDescription($description)
