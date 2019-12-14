@@ -22,7 +22,7 @@ class EpayServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Epay', function ($app) {
+        $this->app->bind('epay', function ($app) {
             return new Epay($app);
         });
 

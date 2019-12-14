@@ -23,7 +23,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Fundamental\\Epay": "src"
+            "Fundamental\\Epay\\": "src"
         }
     },
     "autoload-dev": {
@@ -44,7 +44,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "\\Fundamental\\Epay\\EpayServiceProvider"
+                "Fundamental\\Epay\\EpayServiceProvider"
             ],
             "aliases": {
                 "Epay": "Fundamental\\Epay\\Facades\\Facade"

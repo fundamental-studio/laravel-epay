@@ -2,12 +2,6 @@
 
 namespace Fundamental\Epay\Facades;
 
-/**
- * Class Facade
- * @package Fundamental\Epay\Facades
- * @see Fundamental\Epay\Epay
- */
-
 use Illuminate\Support\Facades\Facade;
 
 class Epay extends Facade
@@ -19,6 +13,6 @@ class Epay extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Fundamental\Epay\Epay';
+        return 'epay';
     }
 }
