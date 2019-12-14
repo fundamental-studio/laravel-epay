@@ -25,7 +25,8 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "nesbot/carbon": "^2.0"
+        "nesbot/carbon": "^2.0",
+        "guzzlehttp/guzzle": "^6.5"
     },
     "require-dev": {
         "orchestra/testbench": "^4.0"
