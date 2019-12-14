@@ -63,7 +63,7 @@ class Epay
             'cancel' => config('EPAY_DEFAULT_URL_CANCEL')
         ];
 
-        if (in_array(strtoupper($language), AVAILABLE_LANGUAGES)) {
+        if (in_array(strtoupper($language), $this::AVAILABLE_LANGUAGES)) {
             $this->language = strtoupper($language);
         }
 
