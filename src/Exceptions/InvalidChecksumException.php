@@ -2,9 +2,8 @@
 
 namespace Fundamental\Epay\Exceptions;
 
-use Exception;
+use InvalidArgumentException;
 
-class InvalidChecksumException extends Exception
+class InvalidChecksumException extends InvalidArgumentException
 {
-
 }

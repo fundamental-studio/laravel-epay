@@ -8,6 +8,7 @@ use Fundamental\Epay\Exceptions\InvalidAmountException;
 use Fundamental\Epay\Exceptions\InvalidInvoiceException;
 use Fundamental\Epay\Exceptions\InvalidChecksumException;
 use Fundamental\Epay\Exceptions\InvalidCurrencyException;
+use Fundamental\Epay\Exceptions\InvalidEasypayResponseException;
 
 class Epay
 {
@@ -18,8 +19,8 @@ class Epay
     private $secret;
     private $language;
 
-    private $gatewayUrl = 'https://epay.bg';
-    private $testGatewayUrl = 'https://test.epay.bg';
+    private $gatewayUrl = 'https://epay.bg/';
+    private $testGatewayUrl = 'https://demo.epay.bg/';
 
     private $encoded;
     private $checksum;
@@ -32,8 +33,9 @@ class Epay
 
     private $idn;
 
+    const AVAILABLE_LANGUAGES = ['BG', 'EN'];
     const AVAILABLE_CURRENCIES = ['BGN', 'USD', 'EUR'];
-    const AVAILABLE_TYPES = ['paylogin', 'credit_payback', 'easypay'];
+    const AVAILABLE_TYPES = ['paylogin', 'credit_paydirect'];
 
     /**
      * Undocumented function
@@ -42,23 +44,27 @@ class Epay
      * @param array $data
      * @param String $language
      */
-    public function __construct(String $page = 'paylogin', array $data = [], String $language = 'bg')
+    public function __construct(String $type = 'paylogin', array $data = [], String $language = 'BG')
     {
-        $this->isProduction = config('epay.production');
+        $this->isProduction = config('EPAY_PRODUCTION');
 
-        $this->type = $type;
-        $this->language = $language;
+        $this->min = config('EPAY_MIN');
+        $this->secret = config('EPAY_SECRET');
 
-        $this->min = config('epay.min');
-        $this->secret = config('epay.secret');
+        if (in_array($type, AVAILABLE_TYPES)) {
+            $this->type = $type;
+        }
 
         $this->urls = [
-            'ok' => config('epay.urls.default_ok'),
-            'cancel' => config('epay.urls.defaul_cancel')
+            'ok' => config('EPAY_DEFAULT_URL_OK'),
+            'cancel' => config('EPAY_DEFAULT_URL_CANCEL')
         ];
 
-        if (isset($data['amount']))
-        {
+        if (in_array(strtoupper($language), AVAILABLE_LANGUAGES)) {
+            $this->language = strtoupper($language);
+        }
+
+        if (isset($data['amount'])) {
             $this->setData($data['invoice'], $data['amount'], $data['expiration'], $data['description']);
         }
     }
@@ -331,7 +337,7 @@ class Epay
      */
     public function getTargetUrl(): String
     {
-        return ($this->isProduction) ? $this->gatewayUrl : $this->testGatewayUrl;
+        return ($this->isProduction) ? $this->gatewayUrl : $this->testGatewayUrl . (($this->language == 'EN') ? 'en/' : '');
     }
 
     /**
@@ -349,6 +355,21 @@ class Epay
             <input type="hidden" name="CHECKSUM" value="{$this->checksum}">
             <input type="hidden" name="URL_OK" value="{$this->urls['ok']}">
             <input type="hidden" name="URL_CANCEL" value="{$this->urls['cancel']}">
+        `;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param string $id
+     * @return String
+     */
+    public function generatePaymentForm($id = ''): String
+    {
+        return `
+            <form id="{$id}" action="{$this->getTargetUrl()}" method="post">
+                {$this->generatePaymentFields()}
+            </form>
         `;
     }
 
@@ -373,24 +394,28 @@ class Epay
 
     private function validateInvoice($invoice)
     {
-        //
+        if (!preg_match('/^\d+$/', (String) $invoice)) {
+            throw new InvalidInvoiceException();
+        }
     }
 
     private function validateAmount($amount)
     {
-        //
+        if (!preg_match('/^\d+(\.(\d+){1,2})?$/', (String) $amount)) {
+            throw new InvalidAmountException();
+        }
     }
 
     private function validateDescription($description)
     {
         if (strlen($description) > 100) {
-            throw new \Exception();
+            throw new InvalidDescriptionException();
         }
     }
 
     private function validateCurrency($currency)
     {
-        if (!in_array($currency, self::AVAILABLE_CURRENCIES)) {
+        if (!in_array($currency, AVAILABLE_CURRENCIES)) {
             throw new InvalidCurrencyException();
         }
     }
