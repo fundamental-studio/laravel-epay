@@ -35,7 +35,8 @@
     "prefer-stable": true,
     "require": {
         "nesbot/carbon": "^2.0",
-        "guzzlehttp/guzzle": "^6.5"
+        "guzzlehttp/guzzle": "^6.5",
+        "illuminate/support": "^5.8|^6.0"
     },
     "require-dev": {
         "orchestra/testbench": "^4.0"
