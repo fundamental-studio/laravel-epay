@@ -1,4 +1,6 @@
-<?php namespace Fundamental\Epay;
+<?php
+
+namespace Fundamental\Epay;
 
 use Illuminate\Support\ServiceProvider;
 
