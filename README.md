@@ -2,8 +2,8 @@
 Laravel wrapper for easy and seamless integration with all available ePay payment methods:
 - ePay
 - EasyPay(10 digit identification number)
-- BPay
-- ePay World
+- BPay(Payment using ATM machine withdraw)
+- ePay World(Payment using debit/credit card)
 
 Made with love and code by [Fundamental Studio Ltd.](https://www.fundamental.bg)
 
@@ -24,19 +24,43 @@ $ php artisan vendor:publish --provider="Fundamental\Epay\EpayServiceProvider"
 
 After publishing the config file, you should either add the needed keys to the global .env Laravel file:
 ```
-EPAY_PRODUCTION=FALSE
-EPAY_MIN=XXXXXXXXXX
-EPAY_SECRET=XXXXXXXXXX
-EPAY_DEFAULT_CURRENCY="BGN"
+EPAY_PRODUCTION=FALSE # Should the
+EPAY_MIN=XXXXXXXXXX # Official KIN number from the ePay platform
+EPAY_SECRET=XXXXXXXXXX # Secret token from the ePay platform
+EPAY_DEFAULT_CURRENCY="BGN" # Default currency
 EPAY_DEFAULT_URL_OK="https://myurl.com/"
 EPAY_DEFAULT_URL_CANCEL="https://myurl.com/"
-EPAY_GENERATE_INVOICE=TRUE
-EPAY_EXPIRATION_HOURS=72
+EPAY_GENERATE_INVOICE=TRUE # Should the package generate random invoice number if one isn't presented
+EPAY_EXPIRATION_HOURS=72 # What is the period(in hours) that tha package should add to the current timestamp for an expiration date
 ```
 
 You are up & running and ready to go.
 
 ## Documentation and Usage instructions
+
+The usage of our package is pretty seamless and easy.
+First of all, you need to use the proper namespace for our package:
+```
+use Fundamental\Epay\Epay;
+```
+
+Creating the instance of our package:
+``` php
+$epay = new Epay('paylogin'); // Use either paylogin or credit_paydirect
+$epay->setData(
+    1000000000, // Could be either number or false(will be auto-generated if EPAY_GENERATE_INVOICE=TRUE)
+    40.00, // Amount of the payment, double formatted either as double or string
+    '14.12.2019 20:46:00', // Could be either formatted date in d.m.Y H:i:s or false(will be auto-generated)
+    'Description of the payment in less than 100 symbols.', // Could be empty
+    'BGN', // Available currencies: BGN, USD, EUR, default to bgn, may be ommited
+    'utf-8' // Encoding, either null or utf-8, may be ommitted
+);
+
+$paymentFields = $epay->generatePaymentFields('https://ok.url', 'https://cancel.url'); // Would return all hidden fields as formatted html
+$paymentFieldsForm = $epay->generatePaymentForm('#form-id', 'https://ok.url', 'https://cancel.url'); // Would return html form with the first parameter as id
+```
+The setData function could be ommitted. The data may be set as array and second parameter to the constructor of the main class.
+
 
 Official ePay documentation can be found [here](https://www.epay.bg/v3main/img/front/tech_wire.pdf).
 - Production ePay url endpoint: https://epay.bg/
