@@ -3,6 +3,9 @@
 namespace Fundamental\Epay;
 
 use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Fundamental\Epay\Exceptions\InvalidAmountException;
+use Fundamental\Epay\Exceptions\InvalidInvoiceException;
 use Fundamental\Epay\Exceptions\InvalidChecksumException;
 use Fundamental\Epay\Exceptions\InvalidCurrencyException;
 
@@ -27,7 +30,10 @@ class Epay
         'cancel' => ''
     ];
 
+    private $idn;
+
     const AVAILABLE_CURRENCIES = ['BGN', 'USD', 'EUR'];
+    const AVAILABLE_TYPES = ['paylogin', 'credit_payback', 'easypay'];
 
     /**
      * Undocumented function
@@ -170,6 +176,43 @@ class Epay
     /**
      * Undocumented function
      *
+     * @return String
+     */
+    public function requestIDNumber(): String
+    {
+        $client = new Client();
+        $res = $client->request('GET', 'https://www.epay.bg/ezp/reg_bill.cgi', [
+            'query' => [
+                'ENCODED' => $this->encoded,
+                'CHECKSUM' => $this->generateChecksum()
+            ]
+        ]);
+
+        if ($res->getStatusCode() == 200)
+        {
+            $idn = (String) $res->getBody();
+            $idn = explode('IDN=', $idn);
+            $this->idn = trim($idn);
+
+            return $this->idn;
+        }
+
+        throw new Exception();
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return String
+     */
+    public function getEasypayIDN(): String
+    {
+        return $this->idn;
+    }
+
+    /**
+     * Undocumented function
+     *
      * @param array $data
      * @return array
      */
@@ -181,21 +224,21 @@ class Epay
 
         $result = [];
 
-		if ($hmac == $checksum)
-		{
-			$data = base64_decode($encoded);
+        if ($hmac == $checksum)
+        {
+            $data = base64_decode($encoded);
             $lines = explode("\n", $data);
 
-			foreach ($lines as $line)
-			{
-				if (preg_match("/^INVOICE=(\d+):STATUS=(PAID|DENIED|EXPIRED)(:PAY_TIME=(\d+):STAN=(\d+):BCODE=([0-9a-zA-Z]+))?$/", $line, $regs))
-				{
-					$result['invoice']  = $invoice = $regs[1];
+            foreach ($lines as $line)
+            {
+                if (preg_match("/^INVOICE=(\d+):STATUS=(PAID|DENIED|EXPIRED)(:PAY_TIME=(\d+):STAN=(\d+):BCODE=([0-9a-zA-Z]+))?$/", $line, $regs))
+                {
+                    $result['invoice']  = $invoice = $regs[1];
                     $result['status']   = $regs[2];
 
-					$result['pay_date'] = (isset($regs[4])) ? $regs[4] : '';
-					$result['stan']     = (isset($regs[5])) ? $regs[5] : '';
-					$result['bcode']    = (isset($regs[6])) ? $regs[6] : '';
+                    $result['pay_date'] = (isset($regs[4])) ? $regs[4] : '';
+                    $result['stan']     = (isset($regs[5])) ? $regs[5] : '';
+                    $result['bcode']    = (isset($regs[6])) ? $regs[6] : '';
 
                     if ($status == 'PAID')
                     {
@@ -210,7 +253,7 @@ class Epay
                         // Expired or other status
                         $result['response'] = "INVOICE=$invoice:STATUS=NO\n";
                     }
-				}
+                }
             }
 
             return $result;
@@ -327,7 +370,6 @@ class Epay
             'URL_CANCEL' => $this->urls['cancel']
         ];
     }
-
 
     private function validateInvoice($invoice)
     {
