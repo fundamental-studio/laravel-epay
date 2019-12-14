@@ -111,36 +111,165 @@ Official ePay documentation can be found [here](https://www.epay.bg/v3main/img/f
 ## Methods
 All available methods with their arguments and return formats.
 
-### new Epay($type, array $data, $language)
 ``` php
 /**
- * Undocumented function
+ * Constructing the Epay class instance.
  *
- * @param String $page
- * @param array $data
- * @param String $language
+ * @param String $type Can be either paylogin or credit_paydirect.
+ * @param array $data May be ommitted and use the setData function.
+ * @param String $language Can be either BG or EN.
  */
-```
+new Epay(String $type = 'paylogin', array $data = [], String $language = 'BG')
 
-``` php
 /**
- * Undocumented function
+ * Setting main data for creating and sending the request.
  *
- * @param string $invoice
- * @param [type] $amount
- * @param string $expiration
- * @param string $description
+ * @param String $invoice
+ * @param [type] $amount The amount
+ * @param String $expiration
+ * @param String $description Invoice description content in less than 100 symbols.
+ * @param string $currency
+ * @param [type] $encoding
  * @return void
  */
 public function setData($invoice = false, $amount, $expiration = false, String $description = '', $currency = 'BGN', $encoding = null)
 
 /**
- * Undocumented function
+ * Setter for invoice number.
  *
- * @param [type] $invoice
+ * @param String $invoice The invoice number.
  * @return void
  */
 public function setInvoice($invoice): void
+
+/**
+ * Get the set or generated invoice number.
+ *
+ * @return String
+ */
+public function getInvoice(): String
+
+/**
+ * Setter for amount number.
+ *
+ * @param double|float|String $amount The invoice amount.
+ * @return void
+ */
+public function setAmount($amount): void
+
+/**
+ * Get the invoice amount.
+ *
+ * @return Double
+ */
+public function getAmount(): Double
+
+/**
+ * Setter for expiration date in format d.m.Y H:i:s
+ *
+ * @param String $expiration Date format: d.m.Y H:i:s
+ * @return void
+ */
+public function setExpiration($expiration): void
+
+/**
+ * Get the already set expiration time.
+ *
+ * @return String
+ */
+public function getExpiration(): String
+
+/**
+ * Setter for invoice description parameter.
+ *
+ * @param String $description Length should be less than 100 symbols.
+ * @return void
+ */
+public function setDescription($description): void
+
+/**
+ * Get the already set description parameter.
+ *
+ * @return String
+ */
+public function getDescription(): String
+
+/**
+ * Send request to the ePay platform for 10 digit code generation and retrieve
+ *
+ * @return String
+ */
+public function requestIDNumber(): String
+
+/**
+ * Retrieve the requested and generated IDN for in place payment at EasyPay
+ *
+ * @return String
+ */
+public function getEasypayIDN(): String
+
+/**
+ * Parse result and get all status and ePay generated fields as array.
+ *
+ * @param array $data Should include encoded and checksum members of the array.
+ * @return array
+ */
+public static function parseResult(array $data): array
+
+/**
+ * Generate the checksum of the send or already initialized data array.
+ *
+ * @param boolean $data
+ * @return void
+ */
+public function generateChecksum($data = false)
+
+/**
+ * Get the encoded data string.
+ *
+ * @return String
+ */
+public function getEncoded(): String
+
+/**
+ * Get the calculated checksum string.
+ *
+ * @return String
+ */
+public function getChecksum(): String
+
+/**
+ * Get the target url for the ePay platform, using the english version and the test parameter.
+ *
+ * @return String
+ */
+public function getTargetUrl(): String
+
+/**
+ * Get all hidden input fields for the needed request.
+ *
+ * @param boolean $urlOk Using the default value from the config or being ommitted.
+ * @param boolean $urlCancel Using the default value from the config or being ommitted.
+ * @return String All needed hidden input fields
+ */
+public function generatePaymentFields($urlOk = false, $urlCancel = false): String
+
+/**
+ * Returns a html form with all hidden input fields for the needed request.
+ *
+ * @param String $id The id element of the generated form.
+ * @param boolean $urlOk Using the default value from the config or being ommitted.
+ * @param boolean $urlCancel Using the default value from the config or being ommitted.
+ * @return String Html form with all hidden fields and set id attribute
+ */
+public function generatePaymentForm(String $id = '', $urlOk = false, $urlCancel = false): String
+
+/**
+ * Get all request parameters for making the ePay request on your own.
+ *
+ * @return array
+ */
+public function getPaymentParameters(): array
 ```
 
 ## Changelog

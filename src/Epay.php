@@ -41,11 +41,11 @@ class Epay
     const AVAILABLE_TYPES = ['paylogin', 'credit_paydirect'];
 
     /**
-     * Undocumented function
+     * Constructing the Epay class instance.
      *
-     * @param String $page
-     * @param array $data
-     * @param String $language
+     * @param String $type Can be either paylogin or credit_paydirect.
+     * @param array $data May be ommitted and use the setData function.
+     * @param String $language Can be either BG or EN.
      */
     public function __construct(String $type = 'paylogin', array $data = [], String $language = 'BG')
     {
@@ -73,12 +73,14 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Setting main data for creating and sending the request.
      *
-     * @param string $invoice
-     * @param [type] $amount
-     * @param string $expiration
-     * @param string $description
+     * @param String $invoice
+     * @param [type] $amount The amount
+     * @param String $expiration
+     * @param String $description Invoice description content in less than 100 symbols.
+     * @param string $currency
+     * @param [type] $encoding
      * @return void
      */
     public function setData($invoice = false, $amount, $expiration = false, String $description = '', $currency = 'BGN', $encoding = null)
@@ -108,9 +110,9 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Setter for invoice number.
      *
-     * @param [type] $invoice
+     * @param String $invoice The invoice number.
      * @return void
      */
     public function setInvoice($invoice): void
@@ -120,7 +122,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Get the set or generated invoice number.
      *
      * @return String
      */
@@ -129,6 +131,12 @@ class Epay
         return $this->data['INVOICE'];
     }
 
+    /**
+     * Setter for amount number.
+     *
+     * @param double|float|String $amount The invoice amount.
+     * @return void
+     */
     public function setAmount($amount): void
     {
         $this->validateAmount($amount);
@@ -136,20 +144,19 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Get the invoice amount.
      *
-     * @param [type] $amount
      * @return Double
      */
-    public function getAmount($amount): Double
+    public function getAmount(): Double
     {
         return (double) $this->data['AMOUNT'];
     }
 
     /**
-     * Undocumented function
+     * Setter for expiration date in format d.m.Y H:i:s
      *
-     * @param [type] $expiration
+     * @param String $expiration Date format: d.m.Y H:i:s
      * @return void
      */
     public function setExpiration($expiration): void
@@ -159,7 +166,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Get the already set expiration time.
      *
      * @return String
      */
@@ -169,9 +176,9 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Setter for invoice description parameter.
      *
-     * @param [type] $description
+     * @param String $description Length should be less than 100 symbols.
      * @return void
      */
     public function setDescription($description): void
@@ -181,7 +188,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Get the already set description parameter.
      *
      * @return String
      */
@@ -191,7 +198,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Send request to the ePay platform for 10 digit code generation and retrieve
      *
      * @return String
      */
@@ -218,7 +225,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Retrieve the requested and generated IDN for in place payment at EasyPay
      *
      * @return String
      */
@@ -228,9 +235,9 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Parse result and get all status and ePay generated fields as array.
      *
-     * @param array $data
+     * @param array $data Should include encoded and checksum members of the array.
      * @return array
      */
     public static function parseResult(array $data): array
@@ -281,7 +288,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Create the needed data array for sending request
      *
      * @param array $data
      * @return void
@@ -298,7 +305,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Encode the needed and formatted data.
      *
      * @return void
      */
@@ -308,7 +315,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Generate the checksum of the send or already initialized data array.
      *
      * @param boolean $data
      * @return void
@@ -321,7 +328,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Get the encoded data string.
      *
      * @return String
      */
@@ -331,7 +338,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Get the calculated checksum string.
      *
      * @return String
      */
@@ -341,7 +348,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Get the target url for the ePay platform, using the english version and the test parameter.
      *
      * @return String
      */
@@ -351,9 +358,11 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Get all hidden input fields for the needed request.
      *
-     * @return String
+     * @param boolean $urlOk Using the default value from the config or being ommitted.
+     * @param boolean $urlCancel Using the default value from the config or being ommitted.
+     * @return String All needed hidden input fields
      */
     public function generatePaymentFields($urlOk = false, $urlCancel = false): String
     {
@@ -377,12 +386,14 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Returns a html form with all hidden input fields for the needed request.
      *
-     * @param string $id
-     * @return String
+     * @param String $id The id element of the generated form.
+     * @param boolean $urlOk Using the default value from the config or being ommitted.
+     * @param boolean $urlCancel Using the default value from the config or being ommitted.
+     * @return String Html form with all hidden fields and set id attribute
      */
-    public function generatePaymentForm($id = '', $urlOk = false, $urlCancel = false): String
+    public function generatePaymentForm(String $id = '', $urlOk = false, $urlCancel = false): String
     {
         return `
             <form id="{$id}" action="{$this->getTargetUrl()}" method="post">
@@ -392,7 +403,7 @@ class Epay
     }
 
     /**
-     * Undocumented function
+     * Get all request parameters for making the ePay request on your own.
      *
      * @return array
      */
