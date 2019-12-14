@@ -54,7 +54,7 @@ class Epay
         $this->min = config('EPAY_MIN');
         $this->secret = config('EPAY_SECRET');
 
-        if (in_array($type, AVAILABLE_TYPES)) {
+        if (in_array($type, $this::AVAILABLE_TYPES)) {
             $this->type = $type;
         }
 
@@ -98,7 +98,7 @@ class Epay
             'DESCRIPTION'   => $description
         ];
 
-        if (in_array($currency, AVAILABLE_CURRENCIES)) {
+        if (in_array($currency, $this::AVAILABLE_CURRENCIES)) {
             $this->data['CURRENCY'] = $currency;
         }
 
@@ -366,23 +366,21 @@ class Epay
      */
     public function generatePaymentFields($urlOk = false, $urlCancel = false): String
     {
-        if ($this->urlOK != false) {
-            $this->urls['ok'] = $this->urlOK;
+        if ($this->urls['ok'] != false) {
+            $this->urls['ok'] = $urlOk;
         }
 
-        if ($this->urlCancel != false) {
-            $this->urls['cancel'] = $this->urlCancel;
+        if ($this->urls['cancel'] != false) {
+            $this->urls['cancel'] = $urlCancel;
         }
 
-        return `
-            <input type="hidden" name="PAGE" value="{$this->type}">
-            <input type="hidden" name="LANG" value="{$this->language}">
-
-            <input type="hidden" name="ENCODED" value="{$this->encoded}">
-            <input type="hidden" name="CHECKSUM" value="{$this->checksum}">
-            <input type="hidden" name="URL_OK" value="{$this->urls['ok']}">
-            <input type="hidden" name="URL_CANCEL" value="{$this->urls['cancel']}">
-        `;
+        return '
+            <input type="hidden" name="PAGE" value="' . $this->type . '">
+            <input type="hidden" name="LANG" value="' . $this->language . '">
+            <input type="hidden" name="ENCODED" value="' . $this->encoded . '">
+            <input type="hidden" name="CHECKSUM" value="' . $this->checksum .'">
+            <input type="hidden" name="URL_OK" value="' . $this->urls['ok'] . '">
+            <input type="hidden" name="URL_CANCEL" value="' . $this->urls['cancel'] . '">';
     }
 
     /**
@@ -395,11 +393,10 @@ class Epay
      */
     public function generatePaymentForm(String $id = '', $urlOk = false, $urlCancel = false): String
     {
-        return `
-            <form id="{$id}" action="{$this->getTargetUrl()}" method="post">
-                {$this->generatePaymentFields($urlOk, $urlCancel)}
-            </form>
-        `;
+        return '
+            <form id="' . $id . '" action="' . $this->getTargetUrl() . '" method="post">
+                ' . $this->generatePaymentFields($urlOk, $urlCancel) . '
+            </form>';
     }
 
     /**
@@ -435,6 +432,11 @@ class Epay
         }
     }
 
+    private function validateExpiration($expiration)
+    {
+
+    }
+
     private function validateDescription($description)
     {
         if (strlen($description) > 100) {
@@ -444,7 +446,7 @@ class Epay
 
     private function validateCurrency($currency)
     {
-        if (!in_array($currency, AVAILABLE_CURRENCIES)) {
+        if (!in_array($currency, $this::AVAILABLE_CURRENCIES)) {
             throw new InvalidCurrencyException();
         }
     }
