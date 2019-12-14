@@ -1,11 +1,17 @@
-# Laravel ePay and EasyPay integration module
-Made with love and code by Fundamental Studio Ltd.
+# Laravel ePay, EasyPay, BPay, ePay World integration module
+Laravel wrapper for easy and seamless integration with all available ePay payment methods:
+- ePay
+- EasyPay(10 digit identification number)
+- BPay
+- ePay World
+
+Made with love and code by Fundamental Studio Ltd.[https://www.fundamental.bg]
 
 ## Installation
 
 Via composer
 ``` bash
-$ composer require fmtl-studio/epay
+$ composer require fmtl-studio/laravel-epay
 ```
 
 ## Documentation and Usage instructions
