@@ -50,18 +50,18 @@ class Epay
      */
     public function __construct(String $type = 'paylogin', array $data = [], String $language = 'BG')
     {
-        $this->isProduction = config('EPAY_PRODUCTION');
+        $this->isProduction = config('production');
 
-        $this->min = config('EPAY_MIN');
-        $this->secret = config('EPAY_SECRET');
+        $this->min = config('min');
+        $this->secret = config('secret');
 
         if (in_array($type, $this::AVAILABLE_TYPES)) {
             $this->type = $type;
         }
 
         $this->urls = [
-            'ok' => config('EPAY_DEFAULT_URL_OK'),
-            'cancel' => config('EPAY_DEFAULT_URL_CANCEL')
+            'ok' => config('urlOk'),
+            'cancel' => config('urlCancel')
         ];
 
         if (in_array(strtoupper($language), $this::AVAILABLE_LANGUAGES)) {
@@ -93,8 +93,8 @@ class Epay
 
         $this->data = [
             'MIN'           => $this->min,
-            'INVOICE'       => ($invoice == false and config('EPAY_GENERATE_INVOICE')) ? (sprintf("%.0f", rand() * 100000)) : $invoice,
-            'EXP_TIME'      => ($expiration == false) ? Carbon::now()->addHours(config('EPAY_EXPIRATION_HOURS'))->format('d.m.Y H:i:s') : $expiration,
+            'INVOICE'       => ($invoice == false and config('generateInvoice')) ? (sprintf("%.0f", rand() * 100000)) : $invoice,
+            'EXP_TIME'      => ($expiration == false) ? Carbon::now()->addHours(config('expirationPeriod'))->format('d.m.Y H:i:s') : $expiration,
             'AMOUNT'        => $amount,
             'DESCRIPTION'   => $description
         ];
