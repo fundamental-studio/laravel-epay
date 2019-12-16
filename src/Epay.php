@@ -77,11 +77,11 @@ class Epay
      * Setting main data for creating and sending the request.
      *
      * @param String $invoice
-     * @param [type] $amount The amount
+     * @param double|float|String $amount The amount
      * @param String $expiration
      * @param String $description Invoice description content in less than 100 symbols.
      * @param string $currency
-     * @param [type] $encoding
+     * @param String $encoding
      * @return void
      */
     public function setData($invoice = false, $amount, $expiration = false, String $description = '', $currency = 'BGN', $encoding = null)

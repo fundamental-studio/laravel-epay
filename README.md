@@ -24,7 +24,7 @@ $ php artisan vendor:publish --provider="Fundamental\Epay\EpayServiceProvider"
 
 After publishing the config file, you should either add the needed keys to the global .env Laravel file:
 ```
-EPAY_PRODUCTION=FALSE # Should the
+EPAY_PRODUCTION=FALSE # Should the platform use the production or the test ePay endpoint
 EPAY_MIN=XXXXXXXXXX # Official KIN number from the ePay platform
 EPAY_SECRET=XXXXXXXXXX # Secret token from the ePay platform
 EPAY_DEFAULT_CURRENCY="BGN" # Default currency
