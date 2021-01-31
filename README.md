@@ -13,7 +13,7 @@ The package is compatible with Laravel 7+ version.
 
 Via composer:
 ``` bash
-$ composer require fundamental-studio/laravel-epay
+$ composer require fmtl-studio/laravel-epay
 ```
 
 After installing, the package should be auto-discovered by Laravel.
