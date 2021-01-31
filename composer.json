@@ -1,5 +1,5 @@
 {
-    "name": "fmtl-studio/laravel-epay",
+    "name": "fundamental-studio/laravel-epay",
     "description": "Laravel adapter to accept payments through the ePay, EasyPay and BPay.",
     "type": "library",
     "homepage": "https://www.fundamental.bg",
