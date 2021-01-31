@@ -16,11 +16,15 @@ Via composer:
 $ composer require fmtl-studio/laravel-epay
 ```
 
+### Publish using the provider
+
 After installing, the package should be auto-discovered by Laravel.
 In order to configurate the package, you need to publish the config file using this command:
 ``` bash
 $ php artisan vendor:publish --provider="Fundamental\Epay\EpayServiceProvider"
 ```
+
+### Config
 
 After publishing the config file, you should either add the needed keys to the global .env Laravel file:
 ```
@@ -44,7 +48,7 @@ First of all, you need to use the proper namespace for our package:
 use Fundamental\Epay\Epay;
 ```
 
-Creating the instance of our package:
+### Creating the instance of our package:
 ``` php
 $epay = new Epay('paylogin', array $data, 'BG'); // Use either paylogin or credit_paydirect, the second parameter is documented in the next section and the third parameter is the request language page will be shown in: BG or EN, default: BG.
 $epay->setData(
@@ -56,6 +60,8 @@ $epay->setData(
     'utf-8' // Encoding, either null or utf-8, may be ommitted
 );
 ```
+
+### Quick way to initiate a payment
 The setData function could be ommitted. The data may be set as array and second parameter to the constructor of the main class.
 ``` php
 $epay = new Epay('paylogin', [
@@ -66,6 +72,8 @@ $epay = new Epay('paylogin', [
 ]);
 ```
 All available methods are shown into the next section, including setter and getter methods.
+
+### Generating payment fields and/or forms
 
 Retrieve the correct and formatted hidden fields, form, or array with all the needed parameters.
 ``` php
@@ -82,11 +90,15 @@ $epay->getPaymentParameters();
 ```
 All available methods are shown into the next section.
 
+### Notes
+
 All current requests can be used as a form for redirecting the user to the ePay platform, including:
 - Payment through your ePay account
 - BPay code for ATM withdraw using 6 digit code
 - Payment through debit/credit card throught ePay World (If ePay World is included into your ePay contract)
 - EasyPay tab, which will give you 10 digit code for payment
+
+### EasyPay
 
 However, if you need and want to integrate your platform with the EasyPay 10 digit code yourself, you can use:
 ``` php
@@ -94,6 +106,8 @@ However, if you need and want to integrate your platform with the EasyPay 10 dig
 $easyPayIDN = $epay->requestIDNumber(); // Returning the 10 digit number for EasyPay payment or throws an exception
 $epay->getEasypayIDN(); // Available method if needed and not assigned the requestIDNumber() to a variable
 ```
+
+### Parsing the results
 
 It is also possible to parse the return results and output them as array:
 ``` php
