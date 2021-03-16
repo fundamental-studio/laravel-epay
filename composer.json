@@ -35,7 +35,7 @@
     "prefer-stable": true,
     "require": {
         "nesbot/carbon": "^2.0",
-        "guzzlehttp/guzzle": "^6.5",
+        "guzzlehttp/guzzle": "^6.5 || ^7.0",
         "illuminate/support": "^5.8|^6.0"
     },
     "require-dev": {
